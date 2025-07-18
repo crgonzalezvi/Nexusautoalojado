@@ -17,11 +17,12 @@ jobs:
         tar -czvf app.tar.gz app run.py requirements.txt Dockerfile docker-compose.yml prometheus
 
     - name: Subir artefacto a Nexus
-      run: |
-        curl --retry 3 --retry-delay 10 --connect-timeout 60 --max-time 300 -v \
-          -u ${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }} \
-          --upload-file app.tar.gz \
-          http://${{ secrets.NEXUS_HOST }}:8081/${{ secrets.NEXUS_REPO }}/app.tar.gz
+  run: |
+    curl --retry 3 --retry-delay 10 --connect-timeout 60 --max-time 300 -v \
+      -u ${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }} \
+      --upload-file app.tar.gz \
+      http://${{ secrets.NEXUS_HOST }}:8081/repository/${{ secrets.NEXUS_REPO }}/app.tar.gz
+
 
     - name: Copiar archivos al servidor EC2
       uses: appleboy/scp-action@v0.1.3
