@@ -1,5 +1,5 @@
 name: CI/CD Pipeline - Nexusautoalojado
-#test
+#tes
 on:
   push:
     branches: [ develop ]
