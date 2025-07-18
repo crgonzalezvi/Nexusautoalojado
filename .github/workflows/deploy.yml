@@ -1,5 +1,5 @@
 name: CI/CD Pipeline - Nexusautoalojado
-#test
+
 on:
   push:
     branches: [ develop ]
@@ -12,19 +12,16 @@ jobs:
     - name: Checkout del repositorio
       uses: actions/checkout@v3
 
-    - name: Instalar dependencias de build
+    - name: Comprimir aplicación en app.tar.gz
       run: |
-        pip install setuptools
-
-    - name: Empaquetar aplicación Python
-      run: |
-        python setup.py sdist
+        tar -czvf app.tar.gz app run.py requirements.txt Dockerfile docker-compose.yml prometheus
 
     - name: Subir artefacto a Nexus
       run: |
-        curl -v -u ${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }} \
-        --upload-file dist/store-api-1.0.0.tar.gz \
-        http://${{ secrets.EC2_HOST }}:8081/repository/${{ secrets.NEXUS_REPO }}/store-api-1.0.0.tar.gz
+        curl --retry 3 --retry-delay 10 --connect-timeout 60 --max-time 300 -v \
+          -u ${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }} \
+          --upload-file app.tar.gz \
+          http://${{ secrets.NEXUS_HOST }}:8081/repository/${{ secrets.NEXUS_REPO }}/app.tar.gz
 
     - name: Copiar archivos al servidor EC2
       uses: appleboy/scp-action@v0.1.3
@@ -45,7 +42,3 @@ jobs:
           cd /home/ec2-user/Nexusautoalojado
           docker-compose down --remove-orphans
           docker-compose up -d --build
-          sleep 60
-          curl -v -u "${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }}" \
-          --upload-file app.tar.gz \
-          "${{ secrets.NEXUS_URL }}/repository/${{ secrets.NEXUS_REPO }}/app.tar.gz"
