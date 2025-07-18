@@ -18,6 +18,9 @@ jobs:
 
     - name: Subir artefacto a Nexus
       run: |
+        echo "Host: ${{ secrets.NEXUS_HOST }}"
+        echo "Repo: ${{ secrets.NEXUS_REPO }}"
+        echo "Usuario: ${{ secrets.NEXUS_USER }}"
         curl --retry 3 --retry-delay 10 --connect-timeout 60 --max-time 300 -v \
           -u ${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }} \
           --upload-file app.tar.gz \
