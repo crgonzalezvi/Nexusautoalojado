@@ -20,7 +20,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         source: "./"
-        target: "~/devops-final"
+        target: "~/Nexusalojado"
 
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v1.0.0
@@ -29,7 +29,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          cd ~/devops-final
+          cd ~/Nexusalojado
           docker-compose down
           docker-compose build --no-cache
           docker-compose up -d
