@@ -45,13 +45,7 @@ jobs:
           cd /home/ec2-user/Nexusautoalojado
           docker-compose down --remove-orphans
           docker-compose up -d --build
-          
-    - name: Empaquetar el proyecto
-      run: |
-        tar -czf app.tar.gz app run.py Dockerfile docker-compose.yml requirements.txt prometheus
-
-    - name: Subir artefacto a Nexus
-      run: |
-        curl -v -u "${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }}" \
-        --upload-file app.tar.gz \
-        "${{ secrets.NEXUS_URL }}/repository/${{ secrets.NEXUS_REPO }}/app.tar.gz"
+          sleep 60
+          curl -v -u "${{ secrets.NEXUS_USER }}:${{ secrets.NEXUS_PASSWORD }}" \
+          --upload-file app.tar.gz \
+          "${{ secrets.NEXUS_URL }}/repository/${{ secrets.NEXUS_REPO }}/app.tar.gz"
